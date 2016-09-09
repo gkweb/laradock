@@ -8,13 +8,13 @@ services:
         build:
             context: ./workspace
             args:
-                - INSTALL_XDEBUG=false
+                - INSTALL_XDEBUG=true
                 - INSTALL_MONGO=false
-                - INSTALL_NODE=false
+                - INSTALL_NODE=true
                 - INSTALL_DRUSH=false
                 - INSTALL_AEROSPIKE_EXTENSION=false
                 - COMPOSER_GLOBAL_INSTALL=false
-                - INSTALL_WORKSPACE_SSH=false
+                - INSTALL_WORKSPACE_SSH=true
                 - PUID=1000
                 - PGID=1000
                 - NODE_VERSION=stable
@@ -33,7 +33,7 @@ services:
         build:
             context: ./php-fpm
             args:
-                - INSTALL_XDEBUG=false
+                - INSTALL_XDEBUG=true
                 - INSTALL_MONGO=false
                 - INSTALL_ZIP_ARCHIVE=false
                 - INSTALL_MEMCACHED=false
@@ -46,6 +46,7 @@ services:
             - "9000"
         links:
             - workspace
+            - mail
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
             - "dockerhost:10.0.75.1"
@@ -69,6 +70,7 @@ services:
             - "443:443"
         links:
             - php-fpm
+            - mail
 
 ### Apache Server Container ##################################
 
@@ -181,7 +183,7 @@ services:
             - "3001:3001"
             - "3002:3002"
             - "3003:3003"
-            
+
 
 ### Memcached Container #####################################
 
@@ -310,3 +312,9 @@ services:
             - ./data/elasticsearch/data:/usr/share/elasticsearch/data
 
 ### Add more Containers below ###############################
+
+    mail:
+        image: djfarrelly/maildev
+        ports:
+            - "9001:80"
+            - "25:25"
